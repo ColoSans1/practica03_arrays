@@ -1,21 +1,27 @@
 let towers = [[], [], []];
 let numDiscs = 3;
+let solving = false;
 
 function initialize() {
-  // Limpia las torres y establece el número de discos
-  numDiscs = parseInt(document.getElementById("numDiscs").value);
+  const inputDiscs = parseInt(document.getElementById("numDiscs").value);
+  if (isNaN(inputDiscs) || inputDiscs < 1 || inputDiscs > 5) {
+    alert("Por favor, selecciona un número de discos entre 1 y 5.");
+    return;
+  }
+
+  numDiscs = inputDiscs;
   towers = [[], [], []];
   for (let i = numDiscs; i >= 1; i--) {
     towers[0].push(i);
   }
+  solving = false;
   render();
 }
 
 function render() {
-  // Limpia y dibuja las torres
   for (let i = 0; i < 3; i++) {
     const tower = document.getElementById(`tower${i + 1}`);
-    tower.innerHTML = ""; // Vaciar torre
+    tower.innerHTML = ""; // Vaciar la torre
     towers[i].forEach((disc, index) => {
       const discDiv = document.createElement("div");
       discDiv.className = "disc";
@@ -30,46 +36,52 @@ function render() {
 }
 
 function getColor(disc) {
-  // Colores para los discos
   const colors = ["red", "orange", "yellow", "green", "blue"];
-  return colors[disc - 1];
+  return colors[(disc - 1) % colors.length];
 }
 
 function move(from, to) {
-  // Verifica si el movimiento es válido
-  if (towers[from].length === 0) {
-    alert("No hay discos para mover en esta pila.");
-    return;
-  }
+  if (towers[from].length === 0) return;
   const disc = towers[from][towers[from].length - 1];
-  if (towers[to].length > 0 && towers[to][towers[to].length - 1] < disc) {
-    alert("Movimiento inválido. No puedes colocar un disco más grande sobre uno más pequeño.");
-    return;
-  }
-  // Realiza el movimiento
+  if (towers[to].length > 0 && towers[to][towers[to].length - 1] < disc) return;
+
   towers[to].push(towers[from].pop());
   render();
 }
 
 function checkWin() {
-  // Verifica si todos los discos están en la torre 3
   if (towers[2].length === numDiscs) {
-    alert("¡Has ganado!");
+    alert("¡Felicidades, has ganado!");
+    solving = false;
   }
 }
 
 function solveHanoi(n, from, to, aux) {
-  if (n === 0) return;
-  solveHanoi(n - 1, from, aux, to);
-  setTimeout(() => {
-    move(from, to);
-    solveHanoi(n - 1, aux, to, from);
-  }, 500);
+  const moves = [];
+  function generateMoves(n, from, to, aux) {
+    if (n > 0) {
+      generateMoves(n - 1, from, aux, to);
+      moves.push([from, to]);
+      generateMoves(n - 1, aux, to, from);
+    }
+  }
+  generateMoves(n, from, to, aux);
+  return moves;
 }
 
 function solve() {
-  // Resuelve automáticamente
-  solveHanoi(numDiscs, 0, 2, 1);
+  if (solving) return;
+  solving = true;
+  const moves = solveHanoi(numDiscs, 0, 2, 1);
+  executeMoves(moves);
 }
 
-
+function executeMoves(moves) {
+  if (moves.length === 0) {
+    solving = false;
+    return;
+  }
+  const [from, to] = moves.shift();
+  move(from, to);
+  setTimeout(() => executeMoves(moves), 500); // Ajusta el tiempo entre movimientos
+}
