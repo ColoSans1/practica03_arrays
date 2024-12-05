@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Torres de Hanoi</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .tower {
+      width: 150px;
+      height: 200px;
+      border: 2px solid black;
+      position: relative;
+    }
+    .disc {
+      position: absolute;
+      height: 20px;
+      border-radius: 5px;
+      text-align: center;
+      line-height: 20px;
+      color: white;
+      font-weight: bold;
+    }
+    #controls {
+      margin-top: 20px;
+    }
+    button {
+      margin: 5px;
+      padding: 10px 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Torres de Hanoi</h1>
+  <label for="numDiscs">Num discs: </label>
+  <input type="number" id="numDiscs" min="1" max="5" value="3">
+  <button onclick="initialize()">START</button>
+  <div class="container">
+    <div class="tower" id="tower1"></div>
+    <div class="tower" id="tower2"></div>
+    <div class="tower" id="tower3"></div>
+  </div>
+  <div id="controls">
+    <button onclick="move(0, 1)">MOU PILA 1 A PILA 2</button>
+    <button onclick="move(0, 2)">MOU PILA 1 A PILA 3</button>
+    <button onclick="move(1, 0)">MOU PILA 2 A PILA 1</button>
+    <button onclick="move(1, 2)">MOU PILA 2 A PILA 3</button>
+    <button onclick="move(2, 0)">MOU PILA 3 A PILA 1</button>
+    <button onclick="move(2, 1)">MOU PILA 3 A PILA 2</button>
+  </div>
+  <button onclick="solve()">RESOL AUTOMÀTICAMENT</button>
+  <script src="script.js"></script>
+</body>
+</html>
